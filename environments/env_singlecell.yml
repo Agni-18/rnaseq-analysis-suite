@@ -1,0 +1,32 @@
+# Arm 2 — scRNA-seq (Scanpy primary + Seurat parallel)
+# Create with:  mamba env create -f environments/env_singlecell.yml
+name: p2-sc
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python>=3.10
+  - scanpy>=1.10
+  - anndata
+  - leidenalg
+  - python-igraph
+  - scrublet
+  - harmonypy
+  - scikit-learn
+  - umap-learn
+  - pandas
+  - numpy
+  - scipy
+  - matplotlib
+  - seaborn
+  - jupyterlab
+  - jupytext
+  - r-base>=4.3
+  - r-seurat>=5
+  - bioconductor-scdblfinder
+  - bioconductor-singler
+  - r-ggplot2
+  - pip
+  - pip:
+      - celltypist
+      - scvi-tools

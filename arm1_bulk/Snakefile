@@ -1,0 +1,20 @@
+# =============================================================================
+# Arm 1 — Bulk RNA-seq DAG (QC -> quant -> DE in R -> functional)
+# Run:   snakemake -s arm1_bulk/Snakefile --use-conda -c4
+# DAG:   snakemake -s arm1_bulk/Snakefile --dag | dot -Tpng > results/arm1_dag.png
+# =============================================================================
+import pandas as pd
+configfile: "config/config.yaml"
+
+samples = pd.read_table("config/samples.tsv")
+ILLUMINA = samples.query("platform == 'illumina'")["sample_id"].tolist()
+
+rule all:
+    input:
+        "results/arm1/multiqc_report.html",
+        "results/arm1/de/deseq2_vs_edger_concordance.png",
+        "results/arm1/functional/gsea_dotplot.png",
+
+include: "rules/qc.smk"
+include: "rules/quant.smk"
+include: "rules/de.smk"

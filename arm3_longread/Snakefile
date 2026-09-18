@@ -1,0 +1,18 @@
+# =============================================================================
+# Arm 3 — Long-read isoform DAG (QC -> minimap2 -> Bambu/IsoQuant -> DTU)
+# Run:   snakemake -s arm3_longread/Snakefile --use-conda -c4
+# =============================================================================
+import pandas as pd
+configfile: "config/config.yaml"
+
+samples  = pd.read_table("config/samples.tsv")
+NANOPORE = samples.query("platform == 'nanopore'")["sample_id"].tolist()
+
+rule all:
+    input:
+        expand("results/arm3/qc/{s}_NanoPlot/NanoStats.txt", s=NANOPORE),
+        "results/arm3/counts/transcript_counts.tsv",
+        "results/arm3/dtu/dtu_results.tsv",
+
+include: "rules/align.smk"
+include: "rules/isoform.smk"

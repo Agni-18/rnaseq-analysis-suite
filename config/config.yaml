@@ -1,0 +1,18 @@
+# ---- Global project config (edit me) ----------------------------------------
+conditions:
+  group_A: A549
+  group_B: K562
+
+subset_chromosomes: ["chr20", "chr21", "chr22"]
+
+downsample_reads:
+  illumina: 5000000
+  nanopore: 500000
+
+reference:
+  genome_fa: data/reference/genome.fa
+  gtf:       data/reference/annotation.gtf
+  txome_fa:  data/reference/transcriptome.fa
+  tx2gene:   data/reference/tx2gene.tsv
+
+threads: 4

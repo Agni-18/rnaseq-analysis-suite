@@ -1,0 +1,32 @@
+# Arm 1 — Bulk RNA-seq (QC, quantification, R differential expression, functional)
+# Create with:  mamba env create -f environments/env_bulk.yml
+name: p2-bulk
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - snakemake-minimal>=8
+  - awscli
+  - seqtk
+  - pigz
+  - fastqc
+  - fastp
+  - multiqc
+  - salmon>=1.10
+  - star>=2.7
+  - subread            # provides featureCounts
+  - samtools
+  - r-base>=4.3
+  - bioconductor-deseq2
+  - bioconductor-edger
+  - bioconductor-tximport
+  - bioconductor-tximeta
+  - bioconductor-apeglm
+  - bioconductor-clusterprofiler
+  - bioconductor-fgsea
+  - bioconductor-org.hs.eg.db
+  - bioconductor-enhancedvolcano
+  - r-pheatmap
+  - r-ggplot2
+  - r-data.table
+  - r-tidyverse

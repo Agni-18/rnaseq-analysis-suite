@@ -1,0 +1,34 @@
+# Single environment used by CI to run `make validate` (union of what the three
+# ground-truth validators need: R/Bioconductor DE + DTU stack, and the scverse
+# single-cell stack). Local runs use the per-arm envs instead.
+name: p2-ci
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - make
+  # ---- R side (Arm 1 DE + Arm 3 DTU validators) ----
+  - r-base>=4.3
+  - bioconductor-deseq2
+  - bioconductor-edger
+  - bioconductor-tximport
+  - bioconductor-apeglm
+  - bioconductor-drimseq
+  - bioconductor-dexseq
+  - bioconductor-stager
+  - r-data.table
+  - r-ggplot2
+  - r-ggrepel
+  - r-yaml
+  # ---- Python side (Arm 2 scRNA-seq validator) ----
+  - python>=3.10
+  - scanpy>=1.10
+  - anndata
+  - leidenalg
+  - python-igraph
+  - scrublet
+  - scikit-learn
+  - scipy
+  - pandas
+  - numpy
+  - matplotlib

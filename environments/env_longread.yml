@@ -1,0 +1,23 @@
+# Arm 3 — Long-read isoform (Nanopore): QC, alignment, isoform discovery/quant, DTU
+# Create with:  mamba env create -f environments/env_longread.yml
+name: p2-longread
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - snakemake-minimal>=8
+  - awscli
+  - seqtk
+  - pigz
+  - nanoplot
+  - pycoqc
+  - minimap2>=2.26
+  - samtools
+  - isoquant>=3.3
+  - r-base>=4.3
+  - bioconductor-bambu
+  - bioconductor-drimseq
+  - bioconductor-dexseq
+  - bioconductor-stager
+  - r-ggplot2
+  - r-data.table
