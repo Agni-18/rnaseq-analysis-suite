@@ -75,9 +75,19 @@ res <- if (requireNamespace("apeglm", quietly = TRUE)) {
   message(">> apeglm not found; using type='normal' shrinkage.")
   lfcShrink(dds, coef = coef_name, type = "normal")
 }
-deseq_dt <- as.data.table(as.data.frame(res), keep.rownames = "gene")
-deseq_dt <- deseq_dt[, .(gene, log2FC_deseq = log2FoldChange,
-                         padj_deseq = padj, stat_deseq = stat)]
+# apeglm returns the shrunken LFC WITHOUT a Wald `stat` column, so take the Wald
+# statistic from the standard results() (same genes, same order) for the GSEA
+# ranking. Building it explicitly also avoids a bare `stat` accidentally
+# resolving to ggplot2::stat() when the column is absent.
+res_std <- results(dds, name = coef_name)
+stopifnot(identical(rownames(res), rownames(res_std)))
+deseq_df            <- as.data.frame(res)
+deseq_df$gene       <- rownames(deseq_df)
+deseq_df$stat_deseq <- res_std$stat
+deseq_dt <- as.data.table(deseq_df)[, .(gene,
+             log2FC_deseq = log2FoldChange,
+             padj_deseq   = padj,
+             stat_deseq   = stat_deseq)]
 
 ## ---- 3. edgeR (canonical tximport -> edgeR offset recipe) ------------------
 cts     <- txi$counts
@@ -92,9 +102,12 @@ design  <- model.matrix(~condition, data = samples)
 y       <- estimateDisp(y, design)
 fit     <- glmQLFit(y, design)
 qlf     <- glmQLFTest(fit, coef = 2)          # 2 = conditionB effect
-edger_dt <- as.data.table(topTags(qlf, n = Inf)$table, keep.rownames = "gene")
-edger_dt <- edger_dt[, .(gene, log2FC_edger = logFC,
-                         padj_edger = FDR, stat_edger = F)]
+edger_tt <- as.data.table(topTags(qlf, n = Inf)$table, keep.rownames = "gene")
+# rename the QL F-statistic column ("F") before selecting, so we never reference
+# a bare `F` (which R also reads as FALSE).
+setnames(edger_tt, "F", "Fstat")
+edger_dt <- edger_tt[, .(gene, log2FC_edger = logFC,
+                         padj_edger = FDR, stat_edger = Fstat)]
 
 ## ---- 4. Merge + concordance ------------------------------------------------
 m <- merge(deseq_dt, edger_dt, by = "gene")
