@@ -1,0 +1,32 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ground-truth:
+    name: Ground-truth validation (all 3 arms)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}          # login shell so the conda env is active
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up environment (micromamba)
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: environments/env_ci.yml
+          cache-environment: true
+
+      - name: Run ground-truth validation
+        run: make validate            # simulates data, runs the shipped code, asserts thresholds
+
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report
+          path: VALIDATION.md
